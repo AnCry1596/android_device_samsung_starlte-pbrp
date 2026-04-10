@@ -80,11 +80,8 @@ jobs:
 
       - name: Patch roomservice.py for Python 3
         run: |
-          RS=~/pbrp/vendor/pb/build/tools/roomservice.py
-          # Fix Python 2 except syntax
-          sed -i 's/except IOError, ES\.ParseError:/except (IOError, ES.ParseError):/' "$RS"
-          # Fix invalid escape sequence \d -> use raw string
-          sed -i "s/'\[a-z\]+|\[\\\\d\]+'/r'[a-z]+|[\\\\d]+'/g" "$RS"
+          sudo apt-get install -y 2to3
+          2to3 -w ~/pbrp/vendor/pb/build/tools/roomservice.py
 
       - name: Build recovery image
         run: |
