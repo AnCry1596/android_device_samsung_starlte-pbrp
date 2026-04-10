@@ -1,17 +1,17 @@
-# TWRP device tree for Samsung S9 aka starlte
+# PBRP device tree for Samsung S9 aka starlte
 
 ## Kernel source 
 Available at https://github.com/corsicanu/android_kernel_samsung_universal9810
 
 ## How to build
-This was tested and it's fully compatible with [minimal manifest twrp](https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni).
-1. Set up the build environment following instructions from [here](https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni/blob/twrp-9.0/README.md#getting-started)
+This was tested and it's fully compatible with a minimal PBRP-based manifest.
+1. Set up the build environment following the PBRP build instructions for your chosen manifest.
 2. In the root folder of cloned repo you need to clone the device tree:
 ```bash
-git clone -b android-9.0 https://github.com/teamwin/android_device_samsung_starlte.git device/samsung/starlte
+git clone -b android-9.0 https://github.com/PitchBlackRecoveryProject/android_device_samsung_starlte.git device/samsung/starlte
 ```
 3. To build:
 ```bash
-export ALLOW_MISSING_DEPENDENCIES=true && . build/envsetup.sh && lunch omni_starlte-eng && mka recoveryimage -j128
+export ALLOW_MISSING_DEPENDENCIES=true && . build/envsetup.sh && lunch pbrp_starlte-eng && mka recoveryimage -j128
 ```
 

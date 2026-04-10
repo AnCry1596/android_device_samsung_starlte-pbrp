@@ -1,0 +1,113 @@
+name: Build PBRP for starlte
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Create a GitHub release with the recovery image'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  build:
+    name: Build recovery image
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Free disk space
+        run: |
+          sudo apt-get remove -y '^dotnet-.*' '^llvm-.*' 'php.*' azure-cli google-cloud-sdk \
+            google-chrome-stable firefox powershell mono-complete || true
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /opt/hostedtoolcache
+          df -h
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            bc bison build-essential ccache curl flex g++-multilib gcc-multilib \
+            git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev \
+            lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev \
+            libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool \
+            squashfs-tools xsltproc zip zlib1g-dev python3 python2 openjdk-8-jdk
+
+      - name: Set up repo tool
+        run: |
+          mkdir -p ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Configure git
+        run: |
+          git config --global user.email "build@github-actions.local"
+          git config --global user.name "GitHub Actions"
+
+      - name: Initialize PBRP source
+        run: |
+          mkdir -p ~/pbrp
+          cd ~/pbrp
+          repo init \
+            -u https://github.com/PitchBlackRecoveryProject/manifest_pb.git \
+            -b android-9.0 \
+            --depth=1
+          repo sync -j$(nproc) --force-sync --no-clone-bundle --no-tags
+
+      - name: Clone device tree
+        run: |
+          cd ~/pbrp
+          git clone --depth=1 \
+            https://github.com/${{ github.repository }}.git \
+            -b ${{ github.ref_name }} \
+            device/samsung/starlte
+
+      - name: Set up ccache
+        run: |
+          echo "USE_CCACHE=1" >> $GITHUB_ENV
+          echo "CCACHE_EXEC=/usr/bin/ccache" >> $GITHUB_ENV
+          ccache -M 10G
+
+      - name: Build recovery image
+        run: |
+          cd ~/pbrp
+          export ALLOW_MISSING_DEPENDENCIES=true
+          export USE_CCACHE=1
+          export CCACHE_EXEC=/usr/bin/ccache
+          . build/envsetup.sh
+          lunch pbrp_starlte-eng
+          mka recoveryimage -j$(nproc)
+
+      - name: Find output image
+        id: find_image
+        run: |
+          IMAGE=$(find ~/pbrp/out/target/product/starlte -maxdepth 1 \
+            \( -name "recovery.img" -o -name "PBRP*.zip" \) | head -1)
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+          echo "Found: $IMAGE"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PBRP-starlte
+          path: |
+            ~/pbrp/out/target/product/starlte/recovery.img
+            ~/pbrp/out/target/product/starlte/PBRP*.zip
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Create release
+        if: ${{ inputs.release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: pbrp-starlte-${{ github.run_number }}
+          name: PBRP starlte build ${{ github.run_number }}
+          body: |
+            Automated PBRP build for Samsung Galaxy S9 (starlte)
+            Built from commit ${{ github.sha }}
+          files: |
+            ~/pbrp/out/target/product/starlte/recovery.img
+            ~/pbrp/out/target/product/starlte/PBRP*.zip
+          fail_on_unmatched_files: false
