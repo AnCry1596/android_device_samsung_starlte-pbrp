@@ -1,6 +1,10 @@
 name: Build PBRP for starlte
 
 on:
+  push:
+    branches:
+      - main
+      - android-9.0
   workflow_dispatch:
     inputs:
       release:
