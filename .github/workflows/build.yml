@@ -75,13 +75,31 @@ jobs:
           echo "CCACHE_EXEC=/usr/bin/ccache" >> $GITHUB_ENV
           ccache -M 10G
 
-      - name: Fix python2 symlink
-        run: sudo ln -sf /usr/bin/python3 /usr/bin/python2
-
-      - name: Patch roomservice.py for Python 3
+      - name: Fix python2 symlink and patch roomservice.py
         run: |
-          sudo apt-get install -y 2to3
-          2to3 -w ~/pbrp/vendor/pb/build/tools/roomservice.py
+          sudo ln -sf /usr/bin/python3 /usr/bin/python2
+          RS=~/pbrp/vendor/pb/build/tools/roomservice.py
+          python3 - "$RS" <<'PYEOF'
+          import sys, re
+
+          path = sys.argv[1]
+          src = open(path).read()
+
+          # file() -> open()
+          src = src.replace('= file(', '= open(')
+
+          # except A, B: -> except (A, B):
+          src = re.sub(r'except\s+(\w[\w.]*)\s*,\s*(\w[\w.]*):', r'except (\1, \2):', src)
+
+          # print "x" / print 'x' -> print("x")
+          src = re.sub(r'\bprint\s+((?![(]).*)', r'print(\1)', src)
+
+          # fix invalid escape \d in string literals
+          src = src.replace(r"'[a-z]+|[\d]+'", r"r'[a-z]+|[\d]+'")
+
+          open(path, 'w').write(src)
+          print("roomservice.py patched OK")
+          PYEOF
 
       - name: Build recovery image
         run: |
