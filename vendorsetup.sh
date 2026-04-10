@@ -1,2 +1,2 @@
-add_lunch_combo pbrp_starlte-eng
+# add_lunch_combo is obsolete; lunch choices are declared in AndroidProducts.mk
 

@@ -75,6 +75,9 @@ jobs:
           echo "CCACHE_EXEC=/usr/bin/ccache" >> $GITHUB_ENV
           ccache -M 10G
 
+      - name: Fix python2 symlink
+        run: sudo ln -sf /usr/bin/python3 /usr/bin/python2
+
       - name: Build recovery image
         run: |
           cd ~/pbrp
