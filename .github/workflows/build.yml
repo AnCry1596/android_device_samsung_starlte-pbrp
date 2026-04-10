@@ -57,7 +57,7 @@ jobs:
           cd ~/pbrp
           repo init \
             -u https://github.com/PitchBlackRecoveryProject/manifest_pb.git \
-            -b android-9.0 \
+            -b android-10.0 \
             --depth=1
           repo sync -j$(nproc) --force-sync --no-clone-bundle --no-tags
 
@@ -66,7 +66,7 @@ jobs:
           cd ~/pbrp
           git clone --depth=1 \
             https://github.com/${{ github.repository }}.git \
-            -b ${{ github.ref_name }} \
+            -b main \
             device/samsung/starlte
 
       - name: Set up ccache
