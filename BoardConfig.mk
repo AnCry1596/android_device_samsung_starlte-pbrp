@@ -32,6 +32,10 @@ BOARD_HAS_NO_REAL_SDCARD := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery.fstab
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
+# System-as-root
+BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
+TARGET_NO_KERNEL := false
+
 # Decryption support for Android 12+ firmware
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
