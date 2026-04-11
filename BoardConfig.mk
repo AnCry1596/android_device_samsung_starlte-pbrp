@@ -36,11 +36,9 @@ TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
 TARGET_NO_KERNEL := false
 
-# Decryption support for Android 12+ firmware
+# Decryption support
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
-TW_INCLUDE_FBE_METADATA_DECRYPT := true
-BOARD_USES_METADATA_PARTITION := true
 
 # PBRP core recovery build flags
 RECOVERY_VARIANT := pitchblackrecovery

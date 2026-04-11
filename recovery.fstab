@@ -13,8 +13,7 @@
 /vendor_image   emmc   /dev/block/platform/11120000.ufs/by-name/VENDOR        flags=backup=1
 /odm_image      emmc   /dev/block/platform/11120000.ufs/by-name/ODM           flags=backup=1;flashimg;display="ODM Image"
 
-/metadata       ext4   /dev/block/platform/11120000.ufs/by-name/METADATA      flags=display="Metadata";wipeingui
-/data           ext4   /dev/block/platform/11120000.ufs/by-name/USERDATA      flags=fileencryption=ice;wrappedkey;metadata_encryption=ice;keydirectory=/metadata/vold/metadata_encryption;length=-20480
+/data           ext4   /dev/block/platform/11120000.ufs/by-name/USERDATA      flags=encryptable=footer;length=-20480
 
 /modem          emmc   /dev/block/platform/11120000.ufs/by-name/RADIO         flags=backup=1;display="Baseband"
 /efs            ext4   /dev/block/platform/11120000.ufs/by-name/EFS           flags=backup=1;display="EFS"
