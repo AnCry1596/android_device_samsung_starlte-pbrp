@@ -75,6 +75,16 @@ jobs:
           echo "CCACHE_EXEC=/usr/bin/ccache" >> $GITHUB_ENV
           ccache -M 10G
 
+      - name: Patch recovery ramdisk rsync to exclude vendor
+        run: |
+          # The PBRP build system rsync copies root/ into recovery/root/ but
+          # root/vendor is a non-empty directory that conflicts with a symlink.
+          # Patch the makefile to exclude vendor from that rsync.
+          MK=~/pbrp/build/core/Makefile
+          sed -i 's|rsync -a --exclude=etc --exclude=sdcard|rsync -a --exclude=etc --exclude=sdcard --exclude=vendor|' "$MK"
+          echo "Patched rsync in $MK"
+          grep "rsync -a" "$MK" | head -3
+
       - name: Fix python2 symlink and patch roomservice.py
         run: |
           sudo ln -sf /usr/bin/python3 /usr/bin/python2
@@ -109,7 +119,6 @@ jobs:
           export CCACHE_EXEC=/usr/bin/ccache
           . build/envsetup.sh
           lunch pbrp_starlte-eng
-          rm -rf out/target/product/starlte/recovery out/target/product/starlte/root/vendor
           mka recoveryimage -j$(nproc)
 
       - name: Find output image
