@@ -1,0 +1,5 @@
+on init
+    start watchdogd
+
+on boot
+    setprop ro.hardware samsungexynos9810

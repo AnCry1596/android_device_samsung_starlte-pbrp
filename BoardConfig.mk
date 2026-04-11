@@ -65,6 +65,9 @@ BOARD_KERNEL_IMAGE_NAME := Image.gz
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/kernel
 BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --tags_offset 0x00000100 --dtb $(DEVICE_PATH)/dtb
 
+# Recovery root files
+TARGET_RECOVERY_DEVICE_DIRS := $(DEVICE_PATH)/recovery
+
 # Include
 TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
 
