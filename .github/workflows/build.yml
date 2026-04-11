@@ -85,6 +85,15 @@ jobs:
           echo "Patched rsync in $MK"
           grep "rsync -a" "$MK" | head -3
 
+      - name: Stub out missing pb_build.sh
+        run: |
+          # pb_build.sh packages the image into a PBRP zip but is not present
+          # in this manifest. The recovery.img is already built at this point
+          # so we just let the script exit cleanly.
+          echo '#!/bin/bash' > ~/pbrp/vendor/pb/pb_build.sh
+          echo 'echo "pb_build.sh: skipping zip packaging"' >> ~/pbrp/vendor/pb/pb_build.sh
+          chmod +x ~/pbrp/vendor/pb/pb_build.sh
+
       - name: Fix python2 symlink and patch roomservice.py
         run: |
           sudo ln -sf /usr/bin/python3 /usr/bin/python2
