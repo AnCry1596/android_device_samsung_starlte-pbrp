@@ -74,7 +74,7 @@ jobs:
             --prune \
             -j$(nproc)
 
-      - name: Clone device tree
+      - name: Clone device tree and vendor dependencies
         run: |
           cd ~/android/pbrp
           # Remove any conflicting device trees pulled in by repo sync
@@ -84,6 +84,11 @@ jobs:
             -b ${{ env.DEVICE_TREE_BRANCH }} \
             https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} \
             device/${{ env.VENDOR }}/${{ env.DEVICE }}
+          # Clone cryptfs_hw vendor library required by BoardConfig
+          git clone \
+            --depth=1 \
+            https://github.com/LineageOS/android_vendor_samsung_cryptfs_hw \
+            vendor/samsung/cryptfs_hw
 
       - name: Set up Python 2.7 via Miniconda
         run: |
