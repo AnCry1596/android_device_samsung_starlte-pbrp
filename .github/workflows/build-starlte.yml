@@ -88,3 +88,32 @@ jobs:
           source build/envsetup.sh
           lunch omni_${{ env.DEVICE }}-eng
           mka pbrp -j$(nproc)
+
+      - name: Upload recovery image as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: starlte-recovery
+          path: ~/android/pbrp/out/target/product/${{ env.DEVICE }}/recovery.img
+          if-no-files-found: error
+
+      - name: Set release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.RELEASE_TAG }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=build-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: "PBRP starlte ${{ steps.tag.outputs.tag }}"
+          body: |
+            PBRP Recovery for Samsung Galaxy S9 (starlte)
+            Branch: ${{ env.MANIFEST_BRANCH }}
+            Commit: ${{ github.sha }}
+          files: ~/android/pbrp/out/target/product/${{ env.DEVICE }}/recovery.img
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
