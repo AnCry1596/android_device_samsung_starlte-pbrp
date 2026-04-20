@@ -87,8 +87,8 @@ jobs:
           # Clone cryptfs_hw vendor library required by BoardConfig
           git clone \
             --depth=1 \
-            https://github.com/LineageOS/android_vendor_samsung_cryptfs_hw \
-            vendor/samsung/cryptfs_hw
+            https://github.com/PitchBlackRecoveryProject/android_vendor_qcom_opensource_cryptfs_hw \
+            vendor/qcom/opensource/commonsys/cryptfs_hw
 
       - name: Set up Python 2.7 via Miniconda
         run: |
