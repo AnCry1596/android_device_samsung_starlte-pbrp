@@ -27,6 +27,11 @@ jobs:
       - name: Clean runner disk space
         uses: rokibhasansagar/slimhub_actions@main
 
+      - name: Set up Python 2
+        uses: actions/setup-python@v5
+        with:
+          python-version: '2.7'
+
       - name: Install build dependencies
         run: |
           sudo apt-get update -qq
@@ -78,6 +83,8 @@ jobs:
       - name: Clone device tree
         run: |
           cd ~/android/pbrp
+          # Remove any conflicting device trees pulled in by repo sync
+          rm -rf device/samsung/m20lte
           git clone \
             --depth=1 \
             -b ${{ env.DEVICE_TREE_BRANCH }} \
