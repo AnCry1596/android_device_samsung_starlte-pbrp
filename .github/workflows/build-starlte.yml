@@ -84,11 +84,6 @@ jobs:
             -b ${{ env.DEVICE_TREE_BRANCH }} \
             https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} \
             device/${{ env.VENDOR }}/${{ env.DEVICE }}
-          # Clone cryptfs_hw vendor library required by BoardConfig
-          git clone \
-            --depth=1 \
-            https://github.com/PitchBlackRecoveryProject/android_vendor_qcom_opensource_cryptfs_hw \
-            vendor/qcom/opensource/commonsys/cryptfs_hw
 
       - name: Set up Python 2.7 via Miniconda
         run: |
