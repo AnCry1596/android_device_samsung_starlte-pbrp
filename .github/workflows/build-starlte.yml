@@ -24,5 +24,29 @@ jobs:
     name: Build PBRP Recovery
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder
-        run: echo "scaffold"
+      - name: Clean runner disk space
+        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            bc bison build-essential ccache curl flex \
+            g++-multilib gcc-multilib git gnupg gperf imagemagick \
+            lib32ncurses5-dev lib32readline-dev lib32z1-dev \
+            liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev \
+            libwxgtk3.0-gtk3-dev libxml2 libxml2-utils lzop \
+            pngcrush python3 python-is-python3 \
+            schedtool squashfs-tools xsltproc zip zlib1g-dev
+
+      - name: Install repo tool
+        run: |
+          mkdir -p ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Configure git identity
+        run: |
+          git config --global user.email "ci@github.actions"
+          git config --global user.name "GitHub Actions"
