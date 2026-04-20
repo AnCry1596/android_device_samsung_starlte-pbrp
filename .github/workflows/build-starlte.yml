@@ -23,6 +23,8 @@ jobs:
   build:
     name: Build PBRP Recovery
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Clean runner disk space
         uses: rokibhasansagar/slimhub_actions@main
