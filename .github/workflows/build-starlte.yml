@@ -81,7 +81,7 @@ jobs:
           git clone \
             --depth=1 \
             -b ${{ env.DEVICE_TREE_BRANCH }} \
-            https://github.com/AnCry1596/android_device_starlte-pbrp \
+            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} \
             device/${{ env.VENDOR }}/${{ env.DEVICE }}
 
       - name: Build PBRP recovery
