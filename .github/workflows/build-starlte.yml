@@ -38,6 +38,7 @@ jobs:
             libwxgtk3.2-dev libxml2 libxml2-utils lzop \
             pngcrush python3 python-is-python3 \
             schedtool squashfs-tools xsltproc zip zlib1g-dev
+          sudo ln -sf /usr/bin/python3 /usr/local/bin/python2
 
       - name: Install repo tool
         run: |
