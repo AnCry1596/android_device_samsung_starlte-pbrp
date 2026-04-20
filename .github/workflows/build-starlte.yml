@@ -38,8 +38,6 @@ jobs:
             libwxgtk3.2-dev libxml2 libxml2-utils lzop \
             pngcrush python3 python-is-python3 \
             schedtool squashfs-tools xsltproc zip zlib1g-dev
-          sudo ln -sf /usr/bin/python3 /usr/local/bin/python2
-
       - name: Install repo tool
         run: |
           mkdir -p ~/bin
@@ -87,12 +85,12 @@ jobs:
             https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} \
             device/${{ env.VENDOR }}/${{ env.DEVICE }}
 
-      - name: Fix roomservice.py Python 2 syntax
+      - name: Set up Python 2.7 via Miniconda
         run: |
-          cd ~/android/pbrp
-          # Fix old-style except syntax and invalid escape sequence for Python 3
-          sed -i "s/except IOError, ES.ParseError:/except (IOError, ES.ParseError):/" vendor/pb/build/tools/roomservice.py
-          sed -i "s/'\\\d'/r'\\\d'/" vendor/pb/build/tools/roomservice.py
+          wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+          bash miniconda.sh -b -p $HOME/miniconda
+          $HOME/miniconda/bin/conda create -n py27 python=2.7 -y
+          echo "$HOME/miniconda/envs/py27/bin" >> $GITHUB_PATH
 
       - name: Build PBRP recovery
         run: |
