@@ -50,6 +50,8 @@ jobs:
         run: |
           git config --global user.email "ci@github.actions"
           git config --global user.name "GitHub Actions"
+          git config --global credential.helper ""
+          git config --global url."https://github.com/".insteadOf "git://github.com/"
 
       - name: Initialize repo
         run: |
@@ -77,10 +79,10 @@ jobs:
         run: |
           cd ~/android/pbrp
           git clone \
-            ${{ env.DEVICE_TREE_URL }} \
+            --depth=1 \
             -b ${{ env.DEVICE_TREE_BRANCH }} \
-            device/${{ env.VENDOR }}/${{ env.DEVICE }} \
-            --depth=1
+            https://github.com/AnCry1596/android_device_starlte-pbrp \
+            device/${{ env.VENDOR }}/${{ env.DEVICE }}
 
       - name: Build PBRP recovery
         run: |
