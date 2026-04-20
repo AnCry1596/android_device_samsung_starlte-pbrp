@@ -50,3 +50,25 @@ jobs:
         run: |
           git config --global user.email "ci@github.actions"
           git config --global user.name "GitHub Actions"
+
+      - name: Initialize repo
+        run: |
+          mkdir -p ~/android/pbrp
+          cd ~/android/pbrp
+          repo init \
+            -u ${{ env.MANIFEST_URL }} \
+            -b ${{ env.MANIFEST_BRANCH }} \
+            --depth=1
+
+      - name: Sync repo
+        run: |
+          cd ~/android/pbrp
+          repo sync \
+            --no-repo-verify \
+            -c \
+            --force-sync \
+            --no-clone-bundle \
+            --no-tags \
+            --optimized-fetch \
+            --prune \
+            -j$(nproc)
