@@ -17,7 +17,7 @@
 
 PRODUCT_RELEASE_NAME := starlte
 
-$(call inherit-product, build/target/product/embedded.mk)
+$(call inherit-product, build/target/product/aosp_base_telephony.mk)
 
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/pb/config/common.mk)
