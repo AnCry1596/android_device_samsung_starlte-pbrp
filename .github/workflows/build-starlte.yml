@@ -72,3 +72,19 @@ jobs:
             --optimized-fetch \
             --prune \
             -j$(nproc)
+
+      - name: Clone device tree
+        run: |
+          cd ~/android/pbrp
+          git clone \
+            ${{ env.DEVICE_TREE_URL }} \
+            -b ${{ env.DEVICE_TREE_BRANCH }} \
+            device/${{ env.VENDOR }}/${{ env.DEVICE }} \
+            --depth=1
+
+      - name: Build PBRP recovery
+        run: |
+          cd ~/android/pbrp
+          source build/envsetup.sh
+          lunch omni_${{ env.DEVICE }}-eng
+          mka pbrp -j$(nproc)
