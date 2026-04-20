@@ -87,6 +87,13 @@ jobs:
             https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} \
             device/${{ env.VENDOR }}/${{ env.DEVICE }}
 
+      - name: Fix roomservice.py Python 2 syntax
+        run: |
+          cd ~/android/pbrp
+          # Fix old-style except syntax and invalid escape sequence for Python 3
+          sed -i "s/except IOError, ES.ParseError:/except (IOError, ES.ParseError):/" vendor/pb/build/tools/roomservice.py
+          sed -i "s/'\\\d'/r'\\\d'/" vendor/pb/build/tools/roomservice.py
+
       - name: Build PBRP recovery
         run: |
           cd ~/android/pbrp
